@@ -1,0 +1,7 @@
+{	
+	"packageName" : "SchoolBusAPI",    
+	"apiPackage"  : "com.schoolbus.client.api",
+	"modelPackage"  : "com.schoolbus.client.model",
+    "packageVersion" : "1.0.0",
+    "sourceFolder" : "src"
+}

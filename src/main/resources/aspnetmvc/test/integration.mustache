@@ -1,0 +1,51 @@
+{{>partial_header}}
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit;
+using {{packageName}};
+
+namespace {{packageName}}.Test
+{
+    {{#operations}}
+	public class {{classname}}IntegrationTest 
+    { 
+		private readonly TestServer _server;
+		private readonly HttpClient _client;
+			
+		/// <summary>
+        /// Setup the test
+        /// </summary>        
+		public {{classname}}IntegrationTest()
+		{
+			_server = new TestServer(new WebHostBuilder()
+            .UseEnvironment("Development")
+            .UseContentRoot(Directory.GetCurrentDirectory())
+            .UseStartup<Startup>());
+            _client = _server.CreateClient();
+		}
+	
+		{{#operation}}
+		
+		[Fact]
+		/// <summary>
+        /// Integration test for {{operationId}}
+        /// </summary>
+		public async void Test{{operationId}}()
+		{
+			var response = await _client.GetAsync("{{basePathWithoutHost}}{{path}}");
+            response.EnsureSuccessStatusCode();
+			
+			// update this to test the API.
+			Assert.True(true);
+		}		
+        
+		{{/operation}}
+    }
+	{{/operations}}
+}

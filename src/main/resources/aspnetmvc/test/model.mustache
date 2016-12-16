@@ -1,0 +1,62 @@
+{{>partial_header}}
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit;
+using {{packageName}};
+using {{packageName}}.Models;
+using System.Reflection;
+
+{{#models}}
+{{#model}}
+namespace {{packageName}}.Test
+{
+    /// <summary>
+    ///  Class for testing the model {{classname}}
+    /// </summary>
+    
+    public class {{classname}}ModelTests
+    {
+        // TODO uncomment below to declare an instance variable for {{classname}}
+        private {{classname}} instance;
+
+        /// <summary>
+        /// Setup the test.
+        /// </summary>        
+        public {{classname}}ModelTests()
+        {
+            instance = new {{classname}}();
+        }
+
+    
+        /// <summary>
+        /// Test an instance of {{classname}}
+        /// </summary>
+        [Fact]
+        public void {{classname}}InstanceTest()
+        {
+            Assert.IsType<{{classname}}>(instance);  
+        }
+
+        {{#vars}}
+        /// <summary>
+        /// Test the property '{{name}}'
+        /// </summary>
+        [Fact]
+        public void {{name}}Test()
+        {
+            // TODO unit test for the property '{{name}}'
+			Assert.True(true);
+        }
+        {{/vars}}
+
+	}
+	
+}
+{{/model}}
+{{/models}}
+
