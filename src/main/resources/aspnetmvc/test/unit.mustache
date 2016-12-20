@@ -18,6 +18,7 @@ using Moq;
 using {{packageName}};
 using {{packageName}}.Models;
 using {{packageName}}.Controllers;
+using {{packageName}}.Services.Impl;
 
 namespace {{packageName}}.Test
 {
@@ -32,11 +33,11 @@ namespace {{packageName}}.Test
         /// </summary>        
 		public {{classname}}UnitTest()
 		{			
-			Mock<DbAppContext> dbAppContext = new Mock<DbAppContext>();
+                    Mock<DbAppContext> dbAppContext = new Mock<DbAppContext>();
 			
-			/*
+                    /*
 			
-			Here you will need to mock up the context.
+                    Here you will need to mock up the context.
 			
             ItemType fakeItem = new ItemType(...);
 
@@ -44,9 +45,12 @@ namespace {{packageName}}.Test
 
             dbAppContext.Setup(x => x.ModelEndpoint).Returns(mockItem.Object);
 
-			*/
+                    */
+
+                    {{classname}}Service _service = new {{classname}}Service(dbAppContext.Object);
 			
-            _{{classname}} = new {{classname}}Controller (dbAppContext.Object);
+                    _{{classname}} = new {{classname}}Controller (_service);
+
 		}
 	
 		{{#operation}}
