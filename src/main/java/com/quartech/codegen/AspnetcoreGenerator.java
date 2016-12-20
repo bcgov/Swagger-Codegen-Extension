@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 public class AspnetcoreGenerator extends AbstractCSharpCodegen implements CodegenConfig {
 
 
+    
     protected String apiVersion = "1.0.0";
 
     private final String packageGuid = "{" + randomUUID().toString().toUpperCase() + "}";
@@ -77,6 +78,8 @@ public class AspnetcoreGenerator extends AbstractCSharpCodegen implements Codege
      */
     
     apiTemplateFiles.put("controller.mustache", ".cs");
+    apiTemplateFiles.put("controllerService.mustache", ".cs");
+    apiTemplateFiles.put("controllerServiceImpl.mustache", ".cs");
     
     /**
      * Template Location.  This is the location which templates will be read from.  The generator
@@ -214,6 +217,34 @@ public class AspnetcoreGenerator extends AbstractCSharpCodegen implements Codege
                 
     }
 
+    
+    
+  @Override
+    public String apiFilename(String templateName, String tag) {
+        String result = apiFileFolder() + '/' + toApiFilename(tag) + apiTemplateFiles().get(templateName);
+
+        if ( templateName.endsWith("Service.mustache") ) {
+            int ix = result.lastIndexOf('/');
+            result = result.substring(0, ix) + "/I" + result.substring(ix+1, result.length() - 3) + "Service.cs";    
+            result = result.replace(apiFileFolder(), serviceFileFolder());
+        } else if ( templateName.endsWith("ServiceImpl.mustache") ) {
+            int ix = result.lastIndexOf('/');
+            result = result.substring(0, ix) + "/" + result.substring(ix, result.length() - 3) + "Service.cs";            
+            result = result.replace(apiFileFolder(), implFileFolder());
+        } else {
+            result = super.apiFilename(templateName, tag);
+        }
+        return result;
+    }
+    
+   public String implFileFolder() {
+    return outputFolder + File.separator + sourceFolder + File.separator + "Services.Impl";
+  }
+   
+   public String serviceFileFolder() {
+    return outputFolder + File.separator + sourceFolder + File.separator + "Services";
+  }
+  
   
     @Override
     public String getSwaggerType(Property p) {

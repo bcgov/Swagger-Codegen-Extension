@@ -45,7 +45,7 @@ namespace {{packageName}}.Controllers
         [SwaggerResponse(200, type: typeof({{&returnType}}))]{{/returnType}}
         public virtual {{#returnType}}IActionResult{{/returnType}}{{^returnType}}void{{/returnType}} {{operationId}}({{#allParams}}{{>pathParam}}{{>queryParam}}{{>bodyParam}}{{>formParam}}{{>headerParam}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         { {{#returnType}}
-            return this._service.{{operationId}}Async({{#allParams}}{{>pathParam}}{{>queryParam}}{{>bodyParam}}{{>formParam}}{{>headerParam}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{/returnType}}{{^returnType}}
+            return this._service.{{operationId}}Async({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{/returnType}}{{^returnType}}
             throw new NotImplementedException();{{/returnType}}
         }
 {{/operation}}
