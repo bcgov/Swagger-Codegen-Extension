@@ -1,0 +1,76 @@
+{{>partial_header}}
+using System;
+using Xunit;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.XPath;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
+using Npgsql;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using {{packageName}};
+using {{packageName}}.Models;
+using {{packageName}}.Controllers;
+using {{packageName}}.Services.Impl;
+
+namespace {{packageName}}.Test
+{
+    {{#operations}}
+	public class {{classname}}UnitTest 
+    { 
+		
+		private readonly {{classname}}Controller _{{classname}};
+		
+		/// <summary>
+        /// Setup the test
+        /// </summary>        
+		public {{classname}}UnitTest()
+		{			
+                    DbContextOptions<DbAppContext> options = new DbContextOptions<DbAppContext>();
+                    Mock<DbAppContext> dbAppContext = new Mock<DbAppContext>(options);
+			
+                    /*
+			
+                    Here you will need to mock up the context.
+			
+            ItemType fakeItem = new ItemType(...);
+
+            Mock<DbSet<ItemType>> mockList = MockDbSet.Create(fakeItem);
+
+            dbAppContext.Setup(x => x.ModelEndpoint).Returns(mockItem.Object);
+
+                    */
+
+                    {{classname}}Service _service = new {{classname}}Service(dbAppContext.Object);
+			
+                    _{{classname}} = new {{classname}}Controller (_service);
+
+		}
+	
+		{{#operation}}
+		
+		[Fact]
+		/// <summary>
+        /// Unit test for {{operationId}}
+        /// </summary>
+		public void Test{{operationId}}()
+		{
+			// Add test code here
+			// it may look like: 
+			//  var result = _{{classname}}Controller.{{operationId}}();
+			//  Assert.True (result == expected-result);
+
+            Assert.True(true);
+		}		
+        
+		{{/operation}}
+    }
+	{{/operations}}
+}

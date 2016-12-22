@@ -1,0 +1,54 @@
+{{>partial_header}}
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Swashbuckle.SwaggerGen.Annotations;
+using {{packageName}}.Models;
+using {{packageName}}.Services;
+
+namespace {{packageName}}.Controllers
+{ {{#operations}}
+    /// <summary>
+    /// {{description}}
+    /// </summary>{{#description}}
+    [Description("{{description}}")]{{/description}}
+    public partial class {{classname}}Controller : Controller
+    {
+        private readonly I{{classname}}Service _service;
+
+        /// <summary>
+        /// Create a controller and set the service
+        /// </summary>
+
+        public {{classname}}Controller(I{{classname}}Service service)
+        {
+            _service = service;
+        }
+	
+	{{#operation}}
+        /// <summary>
+        /// {{#summary}}{{summary}}{{/summary}}
+        /// </summary>
+        {{#notes}}/// <remarks>{{notes}}</remarks>{{/notes}}{{#allParams}}
+        /// <param name="{{paramName}}">{{description}}</param>{{/allParams}}{{#responses}}
+        /// <response code="{{code}}">{{message}}</response>{{/responses}}
+        [{{httpMethod}}]
+        [Route("{{basePathWithoutHost}}{{path}}")]
+        [SwaggerOperation("{{operationId}}")]{{#returnType}}
+        [SwaggerResponse(200, type: typeof({{&returnType}}))]{{/returnType}}
+        public virtual {{#returnType}}IActionResult{{/returnType}}{{^returnType}}void{{/returnType}} {{operationId}}({{#allParams}}{{>pathParam}}{{>queryParam}}{{>bodyParam}}{{>formParam}}{{>headerParam}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+        { {{#returnType}}
+            return this._service.{{operationId}}Async({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{/returnType}}{{^returnType}}
+            throw new NotImplementedException();{{/returnType}}
+        }
+{{/operation}}
+    }
+{{/operations}}
+}
