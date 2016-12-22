@@ -33,7 +33,8 @@ namespace {{packageName}}.Test
         /// </summary>        
 		public {{classname}}UnitTest()
 		{			
-                    Mock<DbAppContext> dbAppContext = new Mock<DbAppContext>();
+                    DbContextOptions<DbAppContext> options = new DbContextOptions<DbAppContext>();
+                    Mock<DbAppContext> dbAppContext = new Mock<DbAppContext>(options);
 			
                     /*
 			
