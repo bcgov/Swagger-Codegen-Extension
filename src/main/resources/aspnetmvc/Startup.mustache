@@ -1,5 +1,4 @@
 {{>partial_header}}
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,24 +35,23 @@ namespace {{packageName}}
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
-  
-    
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-		
-            var connectionString = Configuration["DbContextSettings:ConnectionString"];
+            // Add database context
+            string connectionString = "Host=" + Configuration["DATABASE_SERVICE_NAME"] + "; Username=" + Configuration["POSTGRESQL_USER"] + "; Password=" + Configuration["POSTGRESQL_PASSWORD"] + "; Database=" + Configuration["POSTGRESQL_DATABASE"];
             services.AddDbContext<DbAppContext>(
                 opts => opts.UseNpgsql(connectionString)
             );
-			
+
             // Add framework services.
             services.AddMvc()
                 .AddJsonOptions(
                     opts => { opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); });
-            
+
+            // Configure Swagger
             services.AddSwaggerGen();
-            
             services.ConfigureSwaggerGen(options =>
             {
                 options.SingleApiVersion(new Info
@@ -69,7 +67,9 @@ namespace {{packageName}}
                 options.OperationFilter<XmlCommentsOperationFilter>(comments);
                 options.ModelFilter<XmlCommentsModelFilter>(comments);
             });
-            
+
+            // Add application services.
+            services.RegisterApplicationServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,27 +78,30 @@ namespace {{packageName}}
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-			//if (env.IsDevelopment())
-			//{
-				app.UseDeveloperExceptionPage();
-			//}
-			
-			// migrate database
-			
-			using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            //if (env.IsDevelopment())
+            //{
+                app.UseDeveloperExceptionPage();
+            //}
+
+            // migrate database
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
+                Console.WriteLine("Migrating database");
+
                 // get the application's database context
                 DbContext context = serviceScope.ServiceProvider.GetService<DbAppContext>();
+
                 // do any pending migrations
                 context.Database.Migrate();
+
                 // populate the column comments.  Comments are the PGSQL column descriptions
                 DbCommentsUpdater<DbAppContext> updater = new DbCommentsUpdater<DbAppContext>((DbAppContext)context);
                 updater.UpdateDatabaseDescriptions();
 
             }
-			
+
             app.UseMvc();
-            
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
 

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using {{packageName}}.Models;
 
@@ -19,7 +20,6 @@ namespace {{packageName}}.Services.Impl
     [Description("{{description}}")]{{/description}}
     public class {{classname}}Service : I{{classname}}Service
     {
-
         private readonly DbAppContext _context;
 
         /// <summary>
@@ -28,22 +28,19 @@ namespace {{packageName}}.Services.Impl
         public {{classname}}Service (DbAppContext context)
         {
             _context = context;
-        }
-	
-	{{#operation}}
+        }{{#operation}}
+
         /// <summary>
         /// {{#summary}}{{summary}}{{/summary}}
-        /// </summary>
-        {{#notes}}/// <remarks>{{notes}}</remarks>{{/notes}}{{#allParams}}
+        /// </summary>{{#notes}}
+        /// <remarks>{{notes}}</remarks>{{/notes}}{{#allParams}}
         /// <param name="{{paramName}}">{{description}}</param>{{/allParams}}{{#responses}}
         /// <response code="{{code}}">{{message}}</response>{{/responses}}
-
-        public virtual IActionResult {{operationId}}Async ({{#allParams}}{{&dataType}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}})        
+        public virtual IActionResult {{operationId}}Async({{#allParams}}{{&dataType}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}})        
         {
             var result = "";
             return new ObjectResult(result);
-        }
-{{/operation}}
+        }{{/operation}}
     }
 {{/operations}}
 }
