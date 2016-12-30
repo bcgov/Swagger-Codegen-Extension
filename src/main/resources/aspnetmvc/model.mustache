@@ -11,15 +11,14 @@ using Newtonsoft.Json;
 
 {{#models}}
 {{#model}}
-namespace {{packageName}}.Models
+namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/vendorExtensions.x-codegen-viewmodel}}{{^vendorExtensions.x-codegen-viewmodel}}Models{{/vendorExtensions.x-codegen-viewmodel}}
 {
     /// <summary>
     /// {{description}}
-    /// </summary>
-    [DataContract]
-    public partial class {{classname}} : {{#parent}}{{{parent}}}, {{/parent}} IEquatable<{{classname}}>
+    /// </summary>{{#vendorExtensions.x-codegen-viewmodel}}
+    [DataContract]{{/vendorExtensions.x-codegen-viewmodel}}
+    public partial class {{classname}} :{{#parent}} {{{parent}}}, {{/parent}} IEquatable<{{classname}}>
     {
-
         /// <summary>
         /// Default constructor, required by entity framework
         /// </summary>
@@ -33,10 +32,10 @@ namespace {{packageName}}.Models
         /// </summary>
 {{#vars}}        /// <param name="{{name}}">{{#description}}{{description}}{{/description}}{{^description}}{{name}}{{/description}}{{#required}} (required){{/required}}{{#defaultValue}} (default to {{defaultValue}}){{/defaultValue}}.</param>
 {{/vars}}
-        public {{classname}}({{#vars}}{{datatype}} {{name}}{{^required}} = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/vars}})
+        public {{classname}}({{#vars}}{{&datatype}} {{name}}{{^required}} = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/vars}})
         {
             {{#vars}}{{#required}}
-            this.{{name}} = {{name}};            
+            this.{{name}} = {{name}};
             {{/required}}{{/vars}}{{#vars}}{{^required}}{{#defaultValue}}// use default value if no "{{name}}" provided
             if ({{name}} == null)
             {
@@ -50,18 +49,22 @@ namespace {{packageName}}.Models
             {{/defaultValue}}{{/required}}{{/vars}}
         }
 
-        {{#vars}}
-        /// <summary>
+        {{#vendorExtensions.x-codegen-viewmodel}}{{#vars}}/// <summary>
         /// {{^description}}Gets or Sets {{{name}}}{{/description}}{{#description}}{{{description}}}{{/description}}
         /// </summary>{{#description}}
         /// <value>{{{description}}}</value>{{/description}}
-        [DataMember(Name="{{baseName}}")]
-        {{#description}}[MetaDataExtension (Description = "{{description}}")]{{/description}}        
-        public {{{datatype}}} {{name}} { get; set; }
+        [DataMember(Name="{{baseName}}")]{{#description}}
+        [MetaDataExtension (Description = "{{description}}")]{{/description}}
+        public {{&datatype}} {{name}} { get; set; }
 
-        {{/vars}}
+        {{/vars}}{{/vendorExtensions.x-codegen-viewmodel}}{{^vendorExtensions.x-codegen-viewmodel}}{{#vars}}/// <summary>
+        /// {{^description}}Gets or Sets {{{name}}}{{/description}}{{#description}}{{{description}}}{{/description}}
+        /// </summary>{{#description}}
+        /// <value>{{{description}}}</value>{{/description}}{{#description}}
+        [MetaDataExtension (Description = "{{description}}")]{{/description}}
+        public {{&datatype}} {{name}} { get; set; }
 
-        /// <summary>
+        {{/vars}}{{/vendorExtensions.x-codegen-viewmodel}}/// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -132,10 +135,10 @@ namespace {{packageName}}.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hash = 41;
-                // Suitable nullity checks 
+                // Suitable nullity checks
                 {{#vars}}
                     if (this.{{name}} != null)
-                    { 
+                    {
                         hash = hash * 59 + this.{{name}}.GetHashCode();
                     }
                 {{/vars}}
@@ -156,8 +159,7 @@ namespace {{packageName}}.Models
         }
 
         #endregion Operators
-
     }
+}
 {{/model}}
 {{/models}}
-}

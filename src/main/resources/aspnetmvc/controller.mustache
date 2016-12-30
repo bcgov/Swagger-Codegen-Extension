@@ -26,17 +26,15 @@ namespace {{packageName}}.Controllers
         /// <summary>
         /// Create a controller and set the service
         /// </summary>
-
         public {{classname}}Controller(I{{classname}}Service service)
         {
             _service = service;
-        }
-	
-	{{#operation}}
+        }{{#operation}}
+
         /// <summary>
         /// {{#summary}}{{summary}}{{/summary}}
-        /// </summary>
-        {{#notes}}/// <remarks>{{notes}}</remarks>{{/notes}}{{#allParams}}
+        /// </summary>{{#notes}}
+        /// <remarks>{{notes}}</remarks>{{/notes}}{{#allParams}}
         /// <param name="{{paramName}}">{{description}}</param>{{/allParams}}{{#responses}}
         /// <response code="{{code}}">{{message}}</response>{{/responses}}
         [{{httpMethod}}]
@@ -47,8 +45,7 @@ namespace {{packageName}}.Controllers
         { {{#returnType}}
             return this._service.{{operationId}}Async({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{/returnType}}{{^returnType}}
             throw new NotImplementedException();{{/returnType}}
-        }
-{{/operation}}
+        }{{/operation}}
     }
 {{/operations}}
 }

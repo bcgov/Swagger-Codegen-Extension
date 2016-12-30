@@ -1,47 +1,81 @@
 {{>partial_header}}
-
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using System.Collections.Generic;
+using System;
 
 namespace {{packageName}}.Models
 {
-
-	public class DbAppContext : DbContext
+    public interface IDbAppContext
     {
+        {{#models}}
+        {{#model}}
+        {{^vendorExtensions.x-codegen-viewmodel}}
+        DbSet<{{classname}}> {{classname}}s { get; set; }
+        {{/vendorExtensions.x-codegen-viewmodel}}
+        {{/model}}
+        {{/models}}
 
+        /// <summary>
+        /// Starts a new transaction.
+        /// </summary>
+        /// <returns>
+        /// A Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction that represents 
+        /// the started transaction.
+        /// </returns>
+        IDbContextTransaction BeginTransaction();
+    }
+    
+    public class DbAppContext : DbContext, IDbAppContext
+    {
         /// <summary>
         /// Constructor for Class used for Entity Framework access.
         /// </summary>
         public DbAppContext(DbContextOptions<DbAppContext> options)
                                 : base(options)
-        { }			
-
+        { }
 
         /// <summary>
         /// Override for OnModelCreating - used to change the database naming convention.
         /// </summary>
-        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // add our naming convention extension
-            modelBuilder.UpperCaseUnderscoreSingularConvention();                        
+            modelBuilder.UpperCaseUnderscoreSingularConvention();
         }
-			
+
         // Add methods here to get and set items in the model.
         // For example:
 
         {{#models}}
         {{#model}}
-        public virtual DbSet<{{classname}}> {{classname}}s { get; set; } 
+        {{^vendorExtensions.x-codegen-viewmodel}}
+        public virtual DbSet<{{classname}}> {{classname}}s { get; set; }
+        {{/vendorExtensions.x-codegen-viewmodel}}
         {{/model}}
         {{/models}}
 
         // public DbSet<Classname> Classname { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /// <summary>
+        /// Starts a new transaction.
+        /// </summary>
+        /// <returns>
+        /// A Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction that represents 
+        /// the started transaction.
+        /// </returns>
+        public virtual IDbContextTransaction BeginTransaction()
         {
-            optionsBuilder.UseNpgsql("Host = 127.0.0.1; Username = test; Password = test161107; Database = test");
+            bool existingTransaction = true;
+            IDbContextTransaction transaction = this.Database.CurrentTransaction;
+            if (transaction == null)
+            {
+                existingTransaction = false;
+                transaction = this.Database.BeginTransaction();
+            }
+            return new DbContextTransactionWrapper(transaction, existingTransaction);
         }
     }
 }

@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using {{packageName}}.Models;
 
-
 namespace {{packageName}}.Services
 { {{#operations}}
     /// <summary>
@@ -19,19 +18,15 @@ namespace {{packageName}}.Services
     /// </summary>{{#description}}
     [Description("{{description}}")]{{/description}}
     public interface I{{classname}}Service
-    {
-	
-	{{#operation}}
+    { {{#operation}}
+
         /// <summary>
         /// {{#summary}}{{summary}}{{/summary}}
-        /// </summary>
-        {{#notes}}/// <remarks>{{notes}}</remarks>{{/notes}}{{#allParams}}
+        /// </summary>{{#notes}}
+        /// <remarks>{{notes}}</remarks>{{/notes}}{{#allParams}}
         /// <param name="{{paramName}}">{{description}}</param>{{/allParams}}{{#responses}}
-        /// <response code="{{code}}">{{message}}</response>{{/responses}}        
-
-        IActionResult {{operationId}}Async ({{#allParams}}{{&dataType}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});        
-        
-{{/operation}}
+        /// <response code="{{code}}">{{message}}</response>{{/responses}}
+        IActionResult {{operationId}}Async({{#allParams}}{{&dataType}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{/operation}}
     }
 {{/operations}}
 }
