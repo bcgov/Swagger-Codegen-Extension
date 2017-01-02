@@ -22,12 +22,12 @@ namespace {{packageName}}.Models
         /// Starts a new transaction.
         /// </summary>
         /// <returns>
-        /// A Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction that represents 
+        /// A Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction that represents
         /// the started transaction.
         /// </returns>
         IDbContextTransaction BeginTransaction();
     }
-    
+
     public class DbAppContext : DbContext, IDbAppContext
     {
         /// <summary>
@@ -63,7 +63,7 @@ namespace {{packageName}}.Models
         /// Starts a new transaction.
         /// </summary>
         /// <returns>
-        /// A Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction that represents 
+        /// A Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction that represents
         /// the started transaction.
         /// </returns>
         public virtual IDbContextTransaction BeginTransaction()

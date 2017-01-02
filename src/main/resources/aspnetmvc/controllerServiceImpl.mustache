@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using {{packageName}}.Models;
+using {{packageName}}.ViewModels;
 
 namespace {{packageName}}.Services.Impl
-{ {{#operations}}
+{
+{{#operations}}
     /// <summary>
     /// {{description}}
     /// </summary>{{#description}}
@@ -25,7 +27,7 @@ namespace {{packageName}}.Services.Impl
         /// <summary>
         /// Create a service and set the database context
         /// </summary>
-        public {{classname}}Service (DbAppContext context)
+        public {{classname}}Service(DbAppContext context)
         {
             _context = context;
         }{{#operation}}
@@ -36,7 +38,7 @@ namespace {{packageName}}.Services.Impl
         /// <remarks>{{notes}}</remarks>{{/notes}}{{#allParams}}
         /// <param name="{{paramName}}">{{description}}</param>{{/allParams}}{{#responses}}
         /// <response code="{{code}}">{{message}}</response>{{/responses}}
-        public virtual IActionResult {{operationId}}Async({{#allParams}}{{&dataType}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}})        
+        public virtual IActionResult {{operationId}}Async({{#allParams}}{{&dataType}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         {
             var result = "";
             return new ObjectResult(result);
