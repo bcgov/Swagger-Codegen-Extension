@@ -367,6 +367,8 @@ public class AspnetcoreGenerator extends AbstractCSharpCodegen implements Codege
             List<Map<String, Object>> models = (List<Map<String, Object>>) inner.get("models");
             for (Map<String, Object> mo : models) {
                 CodegenModel cm = (CodegenModel) mo.get("model");
+                sortPropertiesByRequiredFlag(cm.vars);
+                addHasMore(cm.vars);
                 if (cm.vendorExtensions.containsKey("x-codegen-viewmodel")) {
                     viewModels.put(modelName, cm);
                 }
@@ -374,6 +376,43 @@ public class AspnetcoreGenerator extends AbstractCSharpCodegen implements Codege
         }
     }
 
+    private void sortPropertiesByRequiredFlag(List<CodegenProperty> vars) {
+        // move "required" parameters in front of "optional" parameters
+        if (sortParamsByRequiredFlag) {
+            Collections.sort(vars, new Comparator<CodegenProperty>() {
+                @Override
+                public int compare(CodegenProperty one, CodegenProperty another) {
+                    boolean oneRequired = one.required == null ? false : one.required;
+                    boolean anotherRequired = another.required == null ? false : another.required;
+                    if (oneRequired == anotherRequired) {
+                        return 0;
+                    } else if (oneRequired) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+        }
+    }
+
+    private void addHasMore(List<CodegenProperty> vars) {
+        if (vars != null) {
+            for (int i = 0; i < vars.size(); i++) {
+                if (i > 0) {
+                    vars.get(i).secondaryParam = true;
+                } else {
+                    vars.get(i).secondaryParam = false;
+                }
+                if (i < vars.size() - 1) {
+                    vars.get(i).hasMore = true;
+                } else {
+                    vars.get(i).hasMore = false;
+                }
+            }
+        }
+    }
+  
     @Override
     public String toModelFilename(String name) {
         if (viewModels.containsKey(name)) {

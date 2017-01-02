@@ -11,10 +11,12 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Swashbuckle.SwaggerGen.Annotations;
 using {{packageName}}.Models;
+using {{packageName}}.ViewModels;
 using {{packageName}}.Services;
 
 namespace {{packageName}}.Controllers
-{ {{#operations}}
+{
+{{#operations}}
     /// <summary>
     /// {{description}}
     /// </summary>{{#description}}
@@ -41,10 +43,9 @@ namespace {{packageName}}.Controllers
         [Route("{{basePathWithoutHost}}{{path}}")]
         [SwaggerOperation("{{operationId}}")]{{#returnType}}
         [SwaggerResponse(200, type: typeof({{&returnType}}))]{{/returnType}}
-        public virtual {{#returnType}}IActionResult{{/returnType}}{{^returnType}}void{{/returnType}} {{operationId}}({{#allParams}}{{>pathParam}}{{>queryParam}}{{>bodyParam}}{{>formParam}}{{>headerParam}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
-        { {{#returnType}}
-            return this._service.{{operationId}}Async({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{/returnType}}{{^returnType}}
-            throw new NotImplementedException();{{/returnType}}
+        public virtual IActionResult {{operationId}}({{#allParams}}{{>pathParam}}{{>queryParam}}{{>bodyParam}}{{>formParam}}{{>headerParam}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+        {
+            return this._service.{{operationId}}Async({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
         }{{/operation}}
     }
 {{/operations}}

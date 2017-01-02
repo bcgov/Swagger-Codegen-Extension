@@ -24,7 +24,9 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
         /// </summary>
         public {{classname}}()
         {
+{{^vendorExtensions.x-codegen-viewmodel}}
             this.Id = 0;
+{{/vendorExtensions.x-codegen-viewmodel}}
         }
 
         /// <summary>
@@ -137,10 +139,10 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
                 int hash = 41;
                 // Suitable nullity checks
                 {{#vars}}
-                    if (this.{{name}} != null)
-                    {
-                        hash = hash * 59 + this.{{name}}.GetHashCode();
-                    }
+                if (this.{{name}} != null)
+                {
+                    hash = hash * 59 + this.{{name}}.GetHashCode();
+                }
                 {{/vars}}
                 return hash;
             }
