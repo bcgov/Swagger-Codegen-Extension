@@ -75,6 +75,7 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
         /// </summary>   
         [ForeignKey("{{name}}")]
 		[JsonIgnore]
+		{{#description}}[MetaDataExtension (Description = "{{{description}}}")]{{/description}}
         public int{{^isRequired}}?{{/isRequired}} {{name}}Id { get; set; }
         {{/isFloat}}{{/isContainer}}{{/isDateTime}}{{/isBoolean}}{{/isInteger}}{{/isPrimitiveType}}
         {{/vars}}{{/vendorExtensions.x-codegen-viewmodel}}/// <summary>
