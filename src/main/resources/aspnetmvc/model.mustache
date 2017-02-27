@@ -9,6 +9,8 @@ using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using {{packageName}}.Models;
 
 {{#models}}
 {{#model}}
@@ -20,7 +22,7 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
         [MetaDataExtension (Description = "{{description}}")]{{/description}}
 {{#vendorExtensions.x-codegen-viewmodel}}
     [DataContract]{{/vendorExtensions.x-codegen-viewmodel}}
-    public partial class {{classname}} :{{#parent}} {{{parent}}}, {{/parent}} IEquatable<{{classname}}>
+    public partial class {{classname}} : {{^vendorExtensions.x-codegen-viewmodel}}AuditableEntity, {{/vendorExtensions.x-codegen-viewmodel}}{{#parent}} {{{parent}}}, {{/parent}}IEquatable<{{classname}}>
     {
         /// <summary>
         /// Default constructor, required by entity framework
@@ -63,14 +65,17 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
         /// {{^description}}Gets or Sets {{{name}}}{{/description}}{{#description}}{{{description}}}{{/description}}
         /// </summary>{{#description}}
         /// <value>{{{description}}}</value>{{/description}}{{#description}}
-        [MetaDataExtension (Description = "{{{description}}}")]{{/description}}
+        [MetaDataExtension (Description = "{{{description}}}")]{{/description}}{{#isString}}{{#maxLength}}
+        [MaxLength({{maxLength}})]
+        {{/maxLength}}{{/isString}}
         public {{&datatype}} {{name}} { get; set; }
         {{^isPrimitiveType}}{{^isInteger}}{{^isBoolean}}{{^isDateTime}}{{^isContainer}}{{^isFloat}}
         /// <summary>
         /// Foreign key for {{name}} 
-        /// </summary>       
+        /// </summary>   
         [ForeignKey("{{name}}")]
-        public int{{^isRequired}}?{{/isRequired}} {{name}}RefId { get; set; }
+		[JsonIgnore]
+        public int{{^isRequired}}?{{/isRequired}} {{name}}Id { get; set; }
         {{/isFloat}}{{/isContainer}}{{/isDateTime}}{{/isBoolean}}{{/isInteger}}{{/isPrimitiveType}}
         {{/vars}}{{/vendorExtensions.x-codegen-viewmodel}}/// <summary>
         /// Returns the string presentation of the object

@@ -57,6 +57,18 @@ namespace {{packageName}}.Models
         {{/model}}
         {{/models}}
 
+Table,Type,Length,Name,Description
+{{#models}}
+{{#model}}
+{{^vendorExtensions.x-codegen-viewmodel}}
+{{#vars}}{{classname}},{{&datatype}},,{{name}},{{description}}
+{{/vars}}
+{{/vendorExtensions.x-codegen-viewmodel}}
+{{/model}}
+
+{{/models}}
+
+		
         // public DbSet<Classname> Classname { get; set; }
 
         /// <summary>
