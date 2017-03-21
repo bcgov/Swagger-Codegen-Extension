@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 {{#models}}
 {{#model}}
@@ -15,8 +16,12 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
 {
     /// <summary>
     /// {{description}}
-    /// </summary>{{#vendorExtensions.x-codegen-viewmodel}}
+    /// </summary>
+{{#description}}
+        [MetaDataExtension (Description = "{{description}}")]{{/description}}
+{{#vendorExtensions.x-codegen-viewmodel}}
     [DataContract]{{/vendorExtensions.x-codegen-viewmodel}}
+
     public partial class {{classname}} :{{#parent}} {{{parent}}}, {{/parent}} IEquatable<{{classname}}>
     {
         /// <summary>
