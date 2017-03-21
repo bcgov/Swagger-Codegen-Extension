@@ -13,6 +13,7 @@ using Swashbuckle.SwaggerGen.Annotations;
 using {{packageName}}.Models;
 using {{packageName}}.ViewModels;
 using {{packageName}}.Services;
+using {{packageName}}.Authorization;
 
 namespace {{packageName}}.Controllers
 {
@@ -42,7 +43,8 @@ namespace {{packageName}}.Controllers
         [{{httpMethod}}]
         [Route("{{basePathWithoutHost}}{{path}}")]
         [SwaggerOperation("{{operationId}}")]{{#returnType}}
-        [SwaggerResponse(200, type: typeof({{&returnType}}))]{{/returnType}}
+        [SwaggerResponse(200, type: typeof({{&returnType}}))]{{/returnType}}{{#vendorExtensions.x-codegen-permission}}
+        [RequiresPermission(Permission.{{vendorExtensions.x-codegen-permission}})]{{/vendorExtensions.x-codegen-permission}}
         public virtual IActionResult {{operationId}}({{#allParams}}{{>pathParam}}{{>queryParam}}{{>bodyParam}}{{>formParam}}{{>headerParam}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         {
             return this._service.{{operationId}}Async({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
