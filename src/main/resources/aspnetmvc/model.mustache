@@ -16,12 +16,10 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
 {
     /// <summary>
     /// {{description}}
-    /// </summary>
-{{#description}}
+    /// </summary>{{#description}}
         [MetaDataExtension (Description = "{{description}}")]{{/description}}
 {{#vendorExtensions.x-codegen-viewmodel}}
     [DataContract]{{/vendorExtensions.x-codegen-viewmodel}}
-
     public partial class {{classname}} :{{#parent}} {{{parent}}}, {{/parent}} IEquatable<{{classname}}>
     {
         /// <summary>
@@ -40,10 +38,8 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
 {{#vars}}        /// <param name="{{name}}">{{#description}}{{description}}{{/description}}{{^description}}{{name}}{{/description}}{{#required}} (required){{/required}}{{#defaultValue}} (default to {{defaultValue}}){{/defaultValue}}.</param>
 {{/vars}}
         public {{classname}}({{#vars}}{{&datatype}} {{name}}{{^required}} = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/vars}})
-        {
-            {{#vars}}{{#required}}
-            this.{{name}} = {{name}};
-            {{/required}}{{/vars}}{{#vars}}{{^required}}{{#defaultValue}}// use default value if no "{{name}}" provided
+        {   {{#vars}}{{#required}}
+            this.{{name}} = {{name}};{{/required}}{{/vars}}{{#vars}}{{^required}}{{#defaultValue}}// use default value if no "{{name}}" provided
             if ({{name}} == null)
             {
                 this.{{name}} = {{{defaultValue}}};
@@ -51,9 +47,8 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
             else
             {
                 this.{{name}} = {{name}};
-            }
-            {{/defaultValue}}{{^defaultValue}}this.{{name}} = {{name}};
-            {{/defaultValue}}{{/required}}{{/vars}}
+            }{{/defaultValue}}{{^defaultValue}}            this.{{name}} = {{name}};{{/defaultValue}}{{/required}}
+            {{/vars}}
         }
 
         {{#vendorExtensions.x-codegen-viewmodel}}{{#vars}}/// <summary>
@@ -68,9 +63,15 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
         /// {{^description}}Gets or Sets {{{name}}}{{/description}}{{#description}}{{{description}}}{{/description}}
         /// </summary>{{#description}}
         /// <value>{{{description}}}</value>{{/description}}{{#description}}
-        [MetaDataExtension (Description = "{{description}}")]{{/description}}
+        [MetaDataExtension (Description = "{{{description}}}")]{{/description}}
         public {{&datatype}} {{name}} { get; set; }
-
+        {{^isPrimitiveType}}{{^isInteger}}{{^isBoolean}}{{^isDateTime}}{{^isContainer}}{{^isFloat}}
+        /// <summary>
+        /// Foreign key for {{name}} 
+        /// </summary>       
+        [ForeignKey("{{name}}")]
+        public int{{^isRequired}}?{{/isRequired}} {{name}}RefId { get; set; }
+        {{/isFloat}}{{/isContainer}}{{/isDateTime}}{{/isBoolean}}{{/isInteger}}{{/isPrimitiveType}}
         {{/vars}}{{/vendorExtensions.x-codegen-viewmodel}}/// <summary>
         /// Returns the string presentation of the object
         /// </summary>
@@ -119,10 +120,11 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
             if (ReferenceEquals(null, other)) { return false; }
             if (ReferenceEquals(this, other)) { return true; }
 
-            return {{#vars}}{{#isNotContainer}}
+            return {{#vars}}{{#isNotContainer}}                
                 (
-                    this.{{name}} == other.{{name}} ||
-                    this.{{name}} != null &&
+                    this.{{name}} == other.{{name}} ||{{^isPrimitiveType}}{{^isInteger}}{{^isBoolean}}
+                    this.{{name}} != null &&{{/isBoolean}}{{/isInteger}}{{/isPrimitiveType}}{{#isPrimitiveType}}
+                    this.{{name}} != null &&{{/isPrimitiveType}}
                     this.{{name}}.Equals(other.{{name}})
                 ){{#hasMore}} && {{/hasMore}}{{/isNotContainer}}{{^isNotContainer}}
                 (
@@ -144,22 +146,41 @@ namespace {{packageName}}.{{#vendorExtensions.x-codegen-viewmodel}}ViewModels{{/
                 int hash = 41;
                 // Suitable nullity checks
                 {{#vars}}
+                {{^isPrimitiveType}}{{^isInteger}}{{^isBoolean}}   
                 if (this.{{name}} != null)
                 {
                     hash = hash * 59 + this.{{name}}.GetHashCode();
-                }
-                {{/vars}}
+                }{{/isBoolean}}{{/isInteger}}{{#isInteger}}                   
+                hash = hash * 59 + this.{{name}}.GetHashCode();{{/isInteger}}{{#isBoolean}}   
+                hash = hash * 59 + this.{{name}}.GetHashCode();
+                {{/isBoolean}}{{/isPrimitiveType}}{{#isPrimitiveType}}if (this.{{name}} != null)
+                {
+                    hash = hash * 59 + this.{{name}}.GetHashCode();
+                }                
+                {{/isPrimitiveType}}{{/vars}}
                 return hash;
             }
         }
 
         #region Operators
-
+        
+        /// <summary>
+        /// Equals
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator ==({{classname}} left, {{classname}} right)
         {
             return Equals(left, right);
         }
 
+        /// <summary>
+        /// Not Equals
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         public static bool operator !=({{classname}} left, {{classname}} right)
         {
             return !Equals(left, right);

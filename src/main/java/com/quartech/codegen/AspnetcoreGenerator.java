@@ -206,8 +206,8 @@ public class AspnetcoreGenerator extends AbstractCSharpCodegen implements Codege
         supportingFiles.add(new SupportingFile("wwwroot" + File.separator + "web.config", this.sourceFolder + File.separator + "wwwroot", "web.config"));
 
         // add helpers for the model
-        supportingFiles.add(new SupportingFile("DbCommentsUpdater.mustache", this.sourceFolder, "Models" + File.separator + "DbCommentsUpdater.cs"));
-        supportingFiles.add(new SupportingFile("MetaDataExtension.mustache", this.sourceFolder, "Models" + File.separator + "MetaDataExtension.cs"));
+        supportingFiles.add(new SupportingFile("DbCommentsUpdater.mustache", this.sourceFolder, "DbCommentsUpdater.cs"));
+        supportingFiles.add(new SupportingFile("MetaDataExtension.mustache", this.sourceFolder, "MetaDataExtension.cs"));
 
         // test files
         supportingFiles.add(new SupportingFile("test" + File.separator + "project.xproj.mustache", "test", "test.xproj"));
@@ -218,20 +218,23 @@ public class AspnetcoreGenerator extends AbstractCSharpCodegen implements Codege
 
     @Override
     public String apiFilename(String templateName, String tag) {
-        String result = apiFileFolder() + '/' + toApiFilename(tag) + apiTemplateFiles().get(templateName);
-
+        String result = "";
+        
         if (templateName.endsWith("Service.mustache")) {
-            int ix = result.lastIndexOf('/');
-            result = result.substring(0, ix) + "/I" + result.substring(ix + 1, result.length() - 3) + "Service.cs";
-            result = result.replace(apiFileFolder(), serviceFileFolder());
+            result = serviceFileFolder() + File.separator + tag + "Service.cs";            
         } else if (templateName.endsWith("ServiceImpl.mustache")) {
-            int ix = result.lastIndexOf('/');
-            result = result.substring(0, ix) + "/" + result.substring(ix, result.length() - 3) + "Service.cs";
-            result = result.replace(apiFileFolder(), implFileFolder());
+            result = implFileFolder() + File.separator + tag + "Service.cs";                        
         } else {
-            result = super.apiFilename(templateName, tag);
+            result = apiFileFolder() + File.separator + tag + "Controller.cs";            
         }
+                
         return result;
+    }
+    
+    // remove the redundant Api from the API names
+    @Override
+    public String toApiName(String name) {        
+        return initialCaps(name);
     }
 
     public String implFileFolder() {
@@ -241,6 +244,7 @@ public class AspnetcoreGenerator extends AbstractCSharpCodegen implements Codege
     public String serviceFileFolder() {
         return outputFolder + File.separator + sourceFolder + File.separator + "Services";
     }
+    
 
     @Override
     public String getSwaggerType(Property p) {
