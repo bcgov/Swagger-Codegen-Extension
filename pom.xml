@@ -4,8 +4,8 @@
   <groupId>io.swagger</groupId>
   <artifactId>aspnetCore-swagger-codegen</artifactId>
   <packaging>jar</packaging>
-  <name>Quartech Fuse Codegen</name>
-  <version>1.0.0</version>
+  <name>Quartech Codegen</name>
+  <version>1.0.1</version>
   <prerequisites>
     <maven>2.2.0</maven>
   </prerequisites>
@@ -27,7 +27,6 @@
           <forkMode>pertest</forkMode>
         </configuration>
       </plugin>
-
       <!-- attach test jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -44,7 +43,6 @@
         <configuration>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>

@@ -1,2 +1,3 @@
 com.quartech.codegen.AspnetcoreGenerator
+com.quartech.codegen.DjangoGenerator
 com.quartech.codegen.FuseGenerator
