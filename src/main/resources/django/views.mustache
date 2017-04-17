@@ -1,0 +1,13 @@
+{{>partial_header}}
+
+from rest_framework_bulk import (
+    BulkListSerializer,
+    BulkSerializerMixin,
+    ListBulkCreateUpdateDestroyAPIView,
+)
+{{#models}}{{#model}}from models import {{classname}}
+{{/model}}{{/models}}{{#models}}{{#model}}
+class {{classname}}View(ListBulkCreateUpdateDestroyAPIView):
+    queryset = {{classname}}.models.all()
+    serializer_class = {{classname}}Serializer	
+{{/model}}{{/models}}

@@ -21,7 +21,6 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
         super();
         super.embeddedTemplateDir = templateDir = "django";
         
-
         languageSpecificPrimitives.clear();
         languageSpecificPrimitives.add("int");
         languageSpecificPrimitives.add("float");
@@ -58,10 +57,12 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
                 Arrays.asList(
                         "and", "del", "from", "not", "while", "as", "elif", "global", "or", "with",
                         "assert", "else", "if", "pass", "yield", "break", "except", "import",
-                        "print", "class", "exec", "in", "raise", "continue", "finally", "is",
+                        "print", "class", "exec", "in", "raise", "continue", "finally", "is",           
                         "return", "def", "for", "lambda", "try"));   
         
-        modelTemplateFiles.put("model.mustache", ".py");
+        //supportingFiles.clear();
+
+        
     }
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {        
@@ -101,7 +102,7 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
             }                
                 
             
-            LOGGER.info("modelDatatype is " + modelDatatype);
+            //LOGGER.info("modelDatatype is " + modelDatatype);
             property.vendorExtensions.put("modelDatatype", modelDatatype);    
         } 
         super.postProcessModelProperty(model, property);
@@ -114,13 +115,16 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
         // add supporting files here
         
         
-        cliOptions.clear();
+        //cliOptions.clear();
 
         // CLI options
 
         addOption(CodegenConstants.SOURCE_FOLDER,
                 CodegenConstants.SOURCE_FOLDER_DESC,
                 this.sourceFolder);
+        
+                supportingFiles.add(new SupportingFile("model.mustache", "", "model.py"));
+        supportingFiles.add(new SupportingFile("serializers.mustache", "", "serializers.py"));
 
     }
     
