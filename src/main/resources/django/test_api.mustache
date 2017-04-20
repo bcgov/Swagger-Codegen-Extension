@@ -1,0 +1,10 @@
+{{>partial_header}}
+
+from rest_framework import serializers
+{{#models}}{{#model}}from models import {{classname}}
+{{/model}}{{/models}}{{#models}}{{#model}}
+class {{classname}}Serializer(serializers.ModelSerializer):
+  class Meta:
+    model={{classname}}
+	fields = ('id'{{#vars}},'{{name}}'{{/vars}})
+{{/model}}{{/models}}
