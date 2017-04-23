@@ -11,16 +11,16 @@ from . import serializers
 {{#models}}{{#model}}from .models.{{classname}} import {{classname}}
 {{/model}}{{/models}}
 {{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}
+
 class {{operationId}}({{#vendorExtensions.operationParameters}}{{{vendorExtensions.operationParameters}}}{{/vendorExtensions.operationParameters}}{{^vendorExtensions.operationParameters}}APIView{{/vendorExtensions.operationParameters}}):
   """  
   {{{summary}}}  
   """
-  lookup_field = 'id'
   permission_classes = (permissions.AllowAny,){{#vendorExtensions.model}}  
   queryset = {{vendorExtensions.model}}.objects.all(){{/vendorExtensions.model}}{{#vendorExtensions.serializer}}  
-  serializer_class = serializers.{{vendorExtensions.serializer}}{{/vendorExtensions.serializer}}{{#vendorExtensions.operationSource}}
-{{{vendorExtensions.operationSource}}}{{/vendorExtensions.operationSource}}{{^vendorExtensions.operationSource}}  
+  serializer_class = serializers.{{vendorExtensions.serializer}}{{/vendorExtensions.serializer}}
   def {{httpMethod}}(self, request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}):
-    return {{#vendorExtensions.operationReturn}}self.{{{vendorExtensions.operationReturn}}}(request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}){{/vendorExtensions.operationReturn}}{{^vendorExtensions.operationReturn}}Response(){{/vendorExtensions.operationReturn}}{{/vendorExtensions.operationSource}}
+    return {{#vendorExtensions.operationReturn}}self.{{{vendorExtensions.operationReturn}}}(request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}){{/vendorExtensions.operationReturn}}{{^vendorExtensions.operationReturn}}Response(){{/vendorExtensions.operationReturn}}
+
 {{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
 

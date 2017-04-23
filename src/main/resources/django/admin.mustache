@@ -1,0 +1,8 @@
+{{>partial_header}}
+
+from django.contrib import admin
+{{#models}}{{#model}}from .models.{{classname}} import {{classname}}
+{{/model}}{{/models}}
+
+{{#models}}{{#model}}
+admin.site.register({{classname}}){{/model}}{{/models}}

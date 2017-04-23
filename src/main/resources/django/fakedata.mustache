@@ -1,0 +1,20 @@
+{{>partial_header}}
+
+# edit this file with appropriate test data.
+
+{{#models}}{{#model}}
+def {{classname}}TestDataCreate():
+  return {
+{{#vars}}{{#isString}}    '{{name}}':'Initial',
+{{/isString}}{{#isInteger}}    '{{name}}':1,
+{{/isInteger}}{{#isBoolean}}    '{{name}}':True,
+{{/isBoolean}}{{/vars}}  }
+
+def {{classname}}TestDataUpdate():
+  return {
+{{#vars}}{{#isString}}    '{{name}}':'Changed',
+{{/isString}}{{#isInteger}}    '{{name}}':0,
+{{/isInteger}}{{#isBoolean}}    '{{name}}':False,
+{{/isBoolean}}{{/vars}}  }
+
+{{/model}}{{/models}}

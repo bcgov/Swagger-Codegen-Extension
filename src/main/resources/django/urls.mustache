@@ -1,10 +1,31 @@
 {{>partial_header}}
 
-from rest_framework import serializers
-{{#models}}{{#model}}from models import {{classname}}
-{{/model}}{{/models}}{{#models}}{{#model}}
-class {{classname}}Serializer(serializers.ModelSerializer):
-  class Meta:
-    model={{classname}}
-	fields = ('id'{{#vars}},'{{name}}'{{/vars}})
-{{/model}}{{/models}}
+from django.conf.urls import url
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.schemas import SchemaGenerator
+from rest_framework.views import APIView
+from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework_swagger import renderers
+from . import views
+
+class SwaggerSchemaView(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [
+        renderers.OpenAPIRenderer,
+        renderers.SwaggerUIRenderer
+    ]
+    _ignore_model_permissions = True
+    exclude_from_schema = True  
+    def get(self, request):
+        generator = SchemaGenerator()
+        schema = generator.get_schema(request=request)
+        return Response(schema)
+
+urlpatterns = [
+    # Swagger documentation
+    url(r'^$', SwaggerSchemaView.as_view()){{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.operationIgnore}},
+    url(r'^{{{path}}}$', views.{{operationId}}.as_view()){{/vendorExtensions.operationIgnore}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+]
+
+urlpatterns = format_suffix_patterns(urlpatterns)
