@@ -1,0 +1,41 @@
+{{>partial_header}}
+
+import json
+from django.test import TestCase
+from django.test import Client
+import django
+
+from rest_framework.test import APIRequestFactory
+from rest_framework.parsers import JSONParser
+from rest_framework import status
+
+from . import fakedata
+{{#models}}{{#model}}from .models.{{classname}} import {{classname}}
+from .serializers import {{classname}}Serializer
+{{/model}}{{/models}}
+
+# Simple API test cases. 
+# If an API operation contains generated code and requires a simple model object
+# (one that is not complex, containing child items) then it is tested in this 
+# file.
+#
+# See the file test_api_complex.py for other test cases, which must be hand 
+# written.
+class Test_Api_Simple(TestCase):
+
+    def setUp(self):
+        # Every test needs a client.
+        self.client = Client()
+        # needed to setup django
+        django.setup()
+
+{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{#vendorExtensions.x-codegen-operation}}{{^vendorExtensions.operationIgnore}}{{#vendorExtensions.autoTest}}
+    def test_{{operationId}}(self):
+{{#vendorExtensions.testcode}}{{{vendorExtensions.testcode}}}{{/vendorExtensions.testcode}}{{^vendorExtensions.testcode}}        self.fail("Not implemented"){{/vendorExtensions.testcode}}        
+{{/vendorExtensions.autoTest}}{{/vendorExtensions.operationIgnore}}{{/vendorExtensions.x-codegen-operation}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+if __name__ == '__main__':
+    unittest.main()
+
+
+
+

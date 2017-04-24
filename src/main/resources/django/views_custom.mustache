@@ -1,0 +1,25 @@
+{{>partial_header}}
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import permissions 
+from rest_framework import mixins
+from rest_framework import generics
+from rest_framework_bulk import BulkCreateModelMixin
+from . import serializers
+{{#models}}{{#model}}from .models.{{classname}} import {{classname}}
+{{/model}}{{/models}}
+
+# Custom views.  This file is hand edited.
+{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.operationSource}}
+class {{operationId}}({{#vendorExtensions.operationParameters}}{{{vendorExtensions.operationParameters}}}{{/vendorExtensions.operationParameters}}{{^vendorExtensions.operationParameters}}APIView{{/vendorExtensions.operationParameters}}):
+  """  
+  {{{summary}}}  
+  """
+  # enter code for this routine here.        
+  
+  def {{httpMethod}}(self, request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}):
+    return Response()
+{{/vendorExtensions.operationSource}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+

@@ -14,7 +14,12 @@ from . import fakedata
 from .serializers import {{classname}}Serializer
 {{/model}}{{/models}}
 
-class Test_Api(TestCase):
+# Complex API test cases. 
+# If an API operation contains generated code and requires a complex model object
+# (containing child items) then it is tested in this file.
+#
+# This file will have to be edited by hand.
+class Test_Api_Complex(TestCase):
 
     def setUp(self):
         # Every test needs a client.
@@ -22,10 +27,10 @@ class Test_Api(TestCase):
         # needed to setup django
         django.setup()
 
-{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.operationIgnore}}
+{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{#vendorExtensions.x-codegen-operation}}{{^vendorExtensions.operationIgnore}}{{^vendorExtensions.autoTest}}
     def test_{{operationId}}(self):
 {{#vendorExtensions.testcode}}{{{vendorExtensions.testcode}}}{{/vendorExtensions.testcode}}{{^vendorExtensions.testcode}}        self.fail("Not implemented"){{/vendorExtensions.testcode}}        
-{{/vendorExtensions.operationIgnore}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+{{/vendorExtensions.autoTest}}{{/vendorExtensions.operationIgnore}}{{/vendorExtensions.x-codegen-operation}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
 if __name__ == '__main__':
     unittest.main()
 

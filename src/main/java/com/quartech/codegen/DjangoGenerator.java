@@ -23,6 +23,9 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
     public static final String CONTROLLER_PACKAGE = "controllerPackage";
     public static final String DEFAULT_CONTROLLER = "defaultController";
     
+    // if the model is on this list then it can be auto tested.
+    List<String> autoTestList = new java.util.Vector<String>();
+    
     public DjangoGenerator()
     {
         super();
@@ -140,7 +143,8 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
         
         modelTemplateFiles.put("models.mustache", ".py");
                 
-        supportingFiles.add(new SupportingFile("controller.mustache", "", "views.py"));
+        supportingFiles.add(new SupportingFile("views_generated.mustache", "", "views.py"));
+        supportingFiles.add(new SupportingFile("views_custom.mustache", "", "views_custom.py"));
         
         // serializers is required to use the django rest library
         supportingFiles.add(new SupportingFile("serializers.mustache", "", "serializers.py"));    
@@ -155,7 +159,8 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
         supportingFiles.add(new SupportingFile("fakedata.mustache", "", "fakedata.py"));          
         
         // automated tests
-        supportingFiles.add(new SupportingFile("test_api.mustache", "", "test_api.py"));  
+        supportingFiles.add(new SupportingFile("test_api_simple.mustache", "", "test_api_simple.py"));  
+        supportingFiles.add(new SupportingFile("test_api_complex.mustache", "", "test_api_complex.py"));
         
         supportingFiles.add(new SupportingFile("__init__model.mustache",
                             "models",
@@ -190,6 +195,7 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
             List<String> modelImportList = new java.util.Vector<String>();
             
             Iterator<CodegenProperty> iter = cm.vars.iterator();
+            Boolean canAutoTest = true;
             while(iter.hasNext()){
                 // check to see if model name is same as the property name
                 // which will result in compilation error
@@ -212,8 +218,14 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
                         // add the import.
                         modelImports += "from ." + codegenProperty.complexType + " import " + codegenProperty.complexType + "\r\n";                        
                         modelImportList.add(codegenProperty.complexType);
+                        // in the future devise a means of creating test data for complex types.
+                        canAutoTest = false;
                     }                                        
                 }                
+            }
+            if (Boolean.TRUE.equals(canAutoTest))
+            {
+                autoTestList.add(cm.name);                
             }
             cm.vendorExtensions.put ("modelImports", modelImports);
         }
@@ -352,6 +364,12 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
                   model = operation.tags.get(0);
                   operation.vendorExtensions.put("model", model); 
                 }
+                
+                if (this.autoTestList.contains(model))
+                {
+                    operation.vendorExtensions.put ("autoTest", "YES");
+                }
+                
                 switch (vendorExtensionOperation)
                 {
                     case "list":
@@ -393,7 +411,17 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
                     case "create":
                         operation.vendorExtensions.put("operationIgnore", "YES");                        
                         break;
+                    case "ignore":
+                        operation.vendorExtensions.put("operationIgnore", "YES");                        
+                        break;
                     case "destroy":
+                        operation.vendorExtensions.put("operationSource", 
+                                 "  def post(self, request, *args, **kwargs):\r\n" 
+                               + "    \"\"\"\r\n"
+                               + "    Destroys the specified " + model + " object\r\n"
+                               + "    \"\"\"\r\n"                                         
+                               + "    return self.destroy(request, *args, **kwargs)\r\n"                                         
+                        );                                                
                         operation.vendorExtensions.put("operationParameters", "mixins.DestroyModelMixin, generics.GenericAPIView");
                         operation.vendorExtensions.put("operationReturn", "destroy");                        
                         break;
