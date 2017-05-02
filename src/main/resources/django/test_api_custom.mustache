@@ -1,0 +1,38 @@
+{{>partial_header}}
+
+import json
+from django.test import TestCase
+from django.test import Client
+import django
+
+from rest_framework.test import APIRequestFactory
+from rest_framework.parsers import JSONParser
+from rest_framework import status
+
+from . import fakedata
+{{#models}}{{#model}}from .models.{{classname}} import {{classname}}
+from .serializers import {{classname}}Serializer
+{{/model}}{{/models}}
+
+# Custom API test cases. 
+# If an API operation does not contains generated code then it is tested in this 
+# file.
+#
+class Test_Api_Custom(TestCase):
+
+    def setUp(self):
+        # Every test needs a client.
+        self.client = Client()
+        # needed to setup django
+        django.setup()
+
+{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.x-operation-ignore}}{{^vendorExtensions.operationSource}}
+    def test_{{operationId}}(self):
+        self.fail("Not implemented")        
+{{/vendorExtensions.operationSource}}{{/vendorExtensions.x-operation-ignore}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+if __name__ == '__main__':
+    unittest.main()
+
+
+
+

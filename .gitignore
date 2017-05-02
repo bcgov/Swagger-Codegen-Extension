@@ -16,3 +16,5 @@ examples/*
 mvc/*
 hets-mvc/*
 target/*
+
+!swagger-codegen-2.2.2-SNAPSHOT.jar

@@ -1,0 +1,8 @@
+{{>partial_header}}
+
+from django.contrib import admin
+{{#models}}{{#model}}{{^vendorExtensions.x-codegen-viewmodel}}from .models.{{classname}} import {{classname}}{{/vendorExtensions.x-codegen-viewmodel}}
+{{/model}}{{/models}}
+
+{{#models}}{{#model}}{{^vendorExtensions.x-codegen-viewmodel}}
+admin.site.register({{classname}}){{/vendorExtensions.x-codegen-viewmodel}}{{/model}}{{/models}}
