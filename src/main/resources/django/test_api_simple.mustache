@@ -29,10 +29,10 @@ class Test_Api_Simple(TestCase):
         # needed to setup django
         django.setup()
 
-{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{#vendorExtensions.x-codegen-operation}}{{^vendorExtensions.operationIgnore}}{{#vendorExtensions.autoTest}}
+{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{#vendorExtensions.x-codegen-operation}}{{^vendorExtensions.x-operation-ignore}}{{#vendorExtensions.autoTest}}
     def test_{{operationId}}(self):
 {{#vendorExtensions.testcode}}{{{vendorExtensions.testcode}}}{{/vendorExtensions.testcode}}{{^vendorExtensions.testcode}}        self.fail("Not implemented"){{/vendorExtensions.testcode}}        
-{{/vendorExtensions.autoTest}}{{/vendorExtensions.operationIgnore}}{{/vendorExtensions.x-codegen-operation}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+{{/vendorExtensions.autoTest}}{{/vendorExtensions.x-operation-ignore}}{{/vendorExtensions.x-codegen-operation}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
 if __name__ == '__main__':
     unittest.main()
 

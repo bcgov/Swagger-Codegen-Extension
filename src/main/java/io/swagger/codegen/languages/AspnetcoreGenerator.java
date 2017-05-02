@@ -1,4 +1,4 @@
-package com.quartech.codegen;
+package io.swagger.codegen.languages;
 
 import io.swagger.codegen.*;
 import io.swagger.models.properties.*;

@@ -27,9 +27,9 @@ class SwaggerSchemaView(APIView):
 
 urlpatterns = [
     # Swagger documentation
-    url(r'^$', SwaggerSchemaView.as_view()){{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.operationIgnore}}{{#vendorExtensions.operationSource}},
+    url(r'^$', SwaggerSchemaView.as_view()){{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.x-operation-ignore}}{{#vendorExtensions.operationSource}},
     url(r'^{{{path}}}$', views.{{operationId}}.as_view()){{/vendorExtensions.operationSource}}{{^vendorExtensions.operationSource}},
-    url(r'^{{{path}}}$', views_custom.{{operationId}}.as_view()){{/vendorExtensions.operationSource}}{{/vendorExtensions.operationIgnore}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+    url(r'^{{{path}}}$', views_custom.{{operationId}}.as_view()){{/vendorExtensions.operationSource}}{{/vendorExtensions.x-operation-ignore}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

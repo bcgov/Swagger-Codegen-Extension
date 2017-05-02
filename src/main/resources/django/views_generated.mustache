@@ -10,7 +10,7 @@ from rest_framework_bulk import BulkCreateModelMixin
 from . import serializers
 {{#models}}{{#model}}from .models.{{classname}} import {{classname}}
 {{/model}}{{/models}}
-{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}
+{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.x-operation-ignore}}{{#vendorExtensions.operationSource}}
 class {{operationId}}({{#vendorExtensions.operationParameters}}{{{vendorExtensions.operationParameters}}}{{/vendorExtensions.operationParameters}}{{^vendorExtensions.operationParameters}}APIView{{/vendorExtensions.operationParameters}}):
   """  
   {{{summary}}}  
@@ -22,5 +22,5 @@ class {{operationId}}({{#vendorExtensions.operationParameters}}{{{vendorExtensio
 {{{vendorExtensions.operationSource}}}{{/vendorExtensions.operationSource}}{{^vendorExtensions.operationSource}}  
   def {{httpMethod}}(self, request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}):
     return {{#vendorExtensions.operationReturn}}self.{{{vendorExtensions.operationReturn}}}(request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}){{/vendorExtensions.operationReturn}}{{^vendorExtensions.operationReturn}}Response(){{/vendorExtensions.operationReturn}}{{/vendorExtensions.operationSource}}
-{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+{{/vendorExtensions.operationSource}}{{/vendorExtensions.x-operation-ignore}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
 

@@ -12,7 +12,7 @@ from . import serializers
 {{/model}}{{/models}}
 
 # Custom views.  This file is hand edited.
-{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.operationSource}}
+{{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.x-operation-ignore}}{{^vendorExtensions.operationSource}}
 class {{operationId}}({{#vendorExtensions.operationParameters}}{{{vendorExtensions.operationParameters}}}{{/vendorExtensions.operationParameters}}{{^vendorExtensions.operationParameters}}APIView{{/vendorExtensions.operationParameters}}):
   """  
   {{{summary}}}  
@@ -21,5 +21,5 @@ class {{operationId}}({{#vendorExtensions.operationParameters}}{{{vendorExtensio
   
   def {{httpMethod}}(self, request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}):
     return Response()
-{{/vendorExtensions.operationSource}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+{{/vendorExtensions.operationSource}}{{/vendorExtensions.x-operation-ignore}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
 

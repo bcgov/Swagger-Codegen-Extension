@@ -11,5 +11,8 @@ from django.utils import timezone
 class {{classname}}(models.Model):	    
 {{#vars}}    {{name}} = {{{vendorExtensions.modelDatatype}}}   
 {{/vars}}
-{{/model}}
+{{#vendorExtensions.x-codegen-viewmodel}}
+    class Meta:
+      abstract = True
+{{/vendorExtensions.x-codegen-viewmodel}}{{/model}}
 {{/models}}

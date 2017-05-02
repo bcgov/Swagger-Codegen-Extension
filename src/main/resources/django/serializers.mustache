@@ -1,6 +1,7 @@
 {{>partial_header}}
 
 from rest_framework import serializers
+
 {{#models}}{{#model}}from .models.{{classname}} import {{classname}}
 {{/model}}{{/models}}{{#models}}{{#model}}
 class {{classname}}Serializer(serializers.ModelSerializer):

@@ -1,4 +1,4 @@
-package com.quartech.codegen;
+package io.swagger.codegen.languages;
 
 import io.swagger.codegen.*;
 import io.swagger.models.Swagger;
@@ -74,21 +74,32 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {        
         
         String modelDatatype = "";
+        String nullString = "";
+        
         if (property != null)
         {
+            if (!Boolean.TRUE.equals(property.required))
+            {   
+                nullString = "blank=True, null=True";
+            }
             // Replace List<T> with T[] for controller method parameters
             if (Boolean.TRUE.equals(property.isDateTime) || Boolean.TRUE.equals(property.isDate))
             {                
-                modelDatatype = "models.DateField()";
+                modelDatatype = "models.DateField("+ nullString +")";
             }
             else if (Boolean.TRUE.equals(property.isString))
             {
+                // strings always have a max length.
                 String maxLength = "max_length=255";
+                if (nullString.length() > 0)
+                {
+                    nullString = ", " + nullString;
+                }
                 if (property.maxLength != null)
                 {
-                    maxLength = "max_length=" + property.maxLength.toString();
+                    maxLength = "max_length=" + property.maxLength.toString();                    
                 }
-                modelDatatype = "models.CharField(" + maxLength + ")";
+                modelDatatype = "models.CharField(" + maxLength + nullString + ")";
             }
             else if (Boolean.TRUE.equals(property.isInteger))
             {                
@@ -104,20 +115,33 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
                 if (property.maxLength != null)
                 {
                     maxLength = "max_length=" + property.maxLength.toString();
+                    if (nullString.length() > 0)
+                    {
+                        nullString = ", " + nullString ;
+                    }
                 }
-                modelDatatype = "models.BinaryField(" + maxLength + ")";
+                modelDatatype = "models.BinaryField(" + maxLength + nullString + ")";
             }
             else if (Boolean.TRUE.equals(property.isContainer))
             {
-                modelDatatype = "models.ManyToManyField('" + property.complexType + "',related_name='"+ model.name + property.name+"')";
+                // ManyToManyFields do not get a null attribute.
+                if (nullString.length() > 0)
+                {
+                    nullString = ", blank=True";
+                }
+                modelDatatype = "models.ManyToManyField('" + property.complexType + "', related_name='"+ model.name + property.name + "'" + nullString + ")";
             }            
             else if (property.complexType != null)
             {
-                modelDatatype = "models.ForeignKey('"+ property.complexType +"', on_delete=models.CASCADE,related_name='"+ model.name + property.name + "')";
+                if (nullString.length() > 0)
+                {
+                    nullString = ", " + nullString ;
+                }                
+                modelDatatype = "models.ForeignKey('"+ property.complexType +"', related_name='"+ model.name + property.name+ "'" + nullString + ")";
             }
             else // default to string
             {
-                modelDatatype = "models.CharField(max_length=255)";
+                modelDatatype = "models.CharField(blank=True, null=True, max_length=255)";
             }                                           
             //LOGGER.info("modelDatatype is " + modelDatatype);
             property.vendorExtensions.put("modelDatatype", modelDatatype);    
@@ -161,6 +185,7 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
         // automated tests
         supportingFiles.add(new SupportingFile("test_api_simple.mustache", "", "test_api_simple.py"));  
         supportingFiles.add(new SupportingFile("test_api_complex.mustache", "", "test_api_complex.py"));
+        supportingFiles.add(new SupportingFile("test_api_custom.mustache", "", "test_api_custom.py"));
         
         supportingFiles.add(new SupportingFile("__init__model.mustache",
                             "models",
@@ -406,13 +431,13 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
                         );                                                
                         break;
                     case "update":
-                        operation.vendorExtensions.put("operationIgnore", "YES");                         
+                        operation.vendorExtensions.put("x-operation-ignore", "YES");                         
                         break;
                     case "create":
-                        operation.vendorExtensions.put("operationIgnore", "YES");                        
+                        operation.vendorExtensions.put("x-operation-ignore", "YES");                        
                         break;
                     case "ignore":
-                        operation.vendorExtensions.put("operationIgnore", "YES");                        
+                        operation.vendorExtensions.put("x-operation-ignore", "YES");                        
                         break;
                     case "destroy":
                         operation.vendorExtensions.put("operationSource", 
