@@ -69,6 +69,14 @@ It generates the following:
 
 The .NET Core generator does not automatically implement CRUD operations.
 
+The following files can be safely copied into the target project folder after generation, as they are not intended to be edited:
+
+- Controllers
+- Models
+- ViewModels
+- Services
+
+
 ## Java Fuse ##
 
 The Java fuse generator creates a CXF / CDI FUSE skeleton that is suitable for creating a back end service or microservice.  The skeleton will run on its own however is intended to be edited to implement functionality.
