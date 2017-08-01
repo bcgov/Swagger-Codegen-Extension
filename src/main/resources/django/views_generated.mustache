@@ -8,10 +8,11 @@ from rest_framework import mixins
 from rest_framework import generics
 from rest_framework_bulk import BulkCreateModelMixin
 from . import serializers
+from auditable.views import AuditableMixin
 {{#models}}{{#model}}from .models.{{classname}} import {{classname}}
 {{/model}}{{/models}}
 {{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}{{^vendorExtensions.x-operation-ignore}}{{#vendorExtensions.operationSource}}
-class {{operationId}}({{#vendorExtensions.operationParameters}}{{{vendorExtensions.operationParameters}}}{{/vendorExtensions.operationParameters}}{{^vendorExtensions.operationParameters}}APIView{{/vendorExtensions.operationParameters}}):
+class {{operationId}}(AuditableMixin,{{#vendorExtensions.operationParameters}}{{{vendorExtensions.operationParameters}}}{{/vendorExtensions.operationParameters}}{{^vendorExtensions.operationParameters}}APIView{{/vendorExtensions.operationParameters}}):
   """  
   {{{summary}}}  
   """
@@ -23,4 +24,3 @@ class {{operationId}}({{#vendorExtensions.operationParameters}}{{{vendorExtensio
   def {{httpMethod}}(self, request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}):
     return {{#vendorExtensions.operationReturn}}self.{{{vendorExtensions.operationReturn}}}(request, {{#allParams}}{{paramName}}{{^required}} = None{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}){{/vendorExtensions.operationReturn}}{{^vendorExtensions.operationReturn}}Response(){{/vendorExtensions.operationReturn}}{{/vendorExtensions.operationSource}}
 {{/vendorExtensions.operationSource}}{{/vendorExtensions.x-operation-ignore}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
-
