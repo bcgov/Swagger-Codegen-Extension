@@ -8,11 +8,14 @@ from django.utils import timezone
 {{#model}}
 {{{vendorExtensions.modelImports}}}
 
-class {{classname}}(models.Model):	    
-{{#vars}}    {{name}} = {{{vendorExtensions.modelDatatype}}}   
+class {{classname}}(models.Model):
+    class Meta:
+        db_table = '{{vendorExtensions.tableName}}'
+
+{{#vars}}    {{name}} = {{{vendorExtensions.modelDatatype}}}
 {{/vars}}
 {{#vendorExtensions.x-codegen-viewmodel}}
     class Meta:
-      abstract = True
+        abstract = True
 {{/vendorExtensions.x-codegen-viewmodel}}{{/model}}
 {{/models}}
