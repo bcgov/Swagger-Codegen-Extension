@@ -70,12 +70,27 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
 
         
     }
+
+    private String snakify(String input) {
+        StringBuilder builder = new StringBuilder("");
+        int length = input.length();
+        for (int i = 0; i < length; i++) {
+            char c = input.charAt(i);
+            if (Character.isUpperCase(c) && i != 0) {
+                 builder.append("_");
+            }
+            builder.append(Character.toUpperCase(c));
+        }
+
+        return builder.toString();
+    }
+
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {        
         
         String modelDatatype = "";
         String nullString = "";
-        
+
         if (property != null)
         {
             if (!Boolean.TRUE.equals(property.required))
@@ -216,6 +231,9 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
             // add a lower case plural form of the model suitable for making a service out of.
             String pluralClassname = English.plural(cm.classname);
             cm.vendorExtensions.put ("pluralClassname", pluralClassname.toLowerCase());
+
+            cm.vendorExtensions.put ("tableName", snakify(cm.classname));
+
             String modelImports = "";
             List<String> modelImportList = new java.util.Vector<String>();
             
