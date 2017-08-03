@@ -20,6 +20,8 @@ from auditable.models import Auditable
 class {{classname}}(Auditable):	    
 {{#vars}}    {{name}} = {{{vendorExtensions.modelDatatype}}}   
 {{/vars}}
+    class Meta:
+        db_table = '{{vendorExtensions.tableName}}'
 {{/vendorExtensions.x-codegen-viewmodel}}
 {{/model}}
 {{/models}}
