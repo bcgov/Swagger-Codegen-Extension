@@ -7,12 +7,22 @@ from django.utils import timezone
 {{#models}}
 {{#model}}
 {{{vendorExtensions.modelImports}}}
-
+{{#vendorExtensions.x-codegen-viewmodel}}
 class {{classname}}(models.Model):	    
 {{#vars}}    {{name}} = {{{vendorExtensions.modelDatatype}}}   
 {{/vars}}
-{{#vendorExtensions.x-codegen-viewmodel}}
     class Meta:
       abstract = True
-{{/vendorExtensions.x-codegen-viewmodel}}{{/model}}
+{{/vendorExtensions.x-codegen-viewmodel}}
+{{^vendorExtensions.x-codegen-viewmodel}}
+from auditable.models import Auditable
+
+class {{classname}}(Auditable):	    
+{{#vars}}    {{name}} = {{{vendorExtensions.modelDatatype}}}   
+{{/vars}}
+    class Meta:
+        db_table = '{{vendorExtensions.tableName}}'
+
+{{/vendorExtensions.x-codegen-viewmodel}}
+{{/model}}
 {{/models}}
