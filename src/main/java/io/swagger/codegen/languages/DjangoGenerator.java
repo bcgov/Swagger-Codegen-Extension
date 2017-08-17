@@ -71,6 +71,18 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
         
     }
 
+    /**
+     * This method is used to convert camel case strings into uppercase,
+     * snake case strings. For example, an input of "CamelCase" would
+     * result in an output of "CAMEL_CASE".
+     *
+     * Note that this is enabled by default for the models but could be
+     * converted to a parameter specified while running the project.
+     *
+     * @param input This is the camel case string that will be converted.
+     *
+     * @return String Upper snake case string.
+     */
     private String snakify(String input) {
         StringBuilder builder = new StringBuilder("");
         int length = input.length();
