@@ -91,7 +91,7 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
             if (Character.isUpperCase(c) && i != 0) {
                  builder.append("_");
             }
-            builder.append(Character.toUpperCase(c));
+            builder.append(Character.toLowerCase(c));
         }
 
         return builder.toString();
