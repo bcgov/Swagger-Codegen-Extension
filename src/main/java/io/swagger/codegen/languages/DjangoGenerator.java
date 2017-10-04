@@ -246,6 +246,8 @@ public class DjangoGenerator extends DefaultCodegen implements CodegenConfig {
 
             cm.vendorExtensions.put ("tableName", snakify(cm.classname));
 
+            cm.vendorExtensions.put ("serializerDepth", 1);
+
             String modelImports = "";
             List<String> modelImportList = new java.util.Vector<String>();
             
