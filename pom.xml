@@ -146,7 +146,7 @@
     <maven-plugin-version>1.0.0</maven-plugin-version>
     <junit-version>4.8.1</junit-version>
     <codegenloc>${basedir}/swagger-codegen-2.2.2-SNAPSHOT.jar</codegenloc>
-     <swagger-parser-version>1.0.35</swagger-parser-version>
+     <swagger-parser-version>1.0.42</swagger-parser-version>
      <scala-version>2.11.1</scala-version>
      <felix-version>2.3.4</felix-version>
      <swagger-core-version>1.5.11</swagger-core-version>  
